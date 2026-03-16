@@ -20,8 +20,8 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
         <header className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
-            <a href="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="Clean Air Duct Logo" className="h-8 w-auto" />
+            <a href="/duct/" className="flex items-center gap-2">
+              <img src="/duct/logo.png" alt="Clean Air Duct Logo" className="h-8 w-auto" />
               <span className="text-xl font-bold tracking-tight text-primary uppercase">Clean Air Duct</span>
             </a>
             <nav className="hidden md:flex gap-6 text-sm font-medium">

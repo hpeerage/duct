@@ -31,9 +31,9 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
   const heroImages = [
-    "/images/hero_bg01.png",
-    "/images/hero_bg02.png",
-    "/images/hero_bg03.png",
+    "/duct/images/hero_bg01.png",
+    "/duct/images/hero_bg02.png",
+    "/duct/images/hero_bg03.png",
   ];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
