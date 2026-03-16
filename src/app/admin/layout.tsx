@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
   MessageSquare, 
@@ -24,21 +24,27 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isLoginPage = pathname === "/admin";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
-      if (!session) {
+      if (!session && !isLoginPage) {
         router.push("/admin");
       }
+    }).catch(err => {
+      console.warn("Session check failed (placeholder):", err);
+      setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) {
+      if (!session && !isLoginPage) {
         router.push("/admin");
       }
     });
@@ -59,7 +65,10 @@ export default function AdminLayout({
     );
   }
 
-  if (!session) return null;
+  if (!session && !isLoginPage) return null;
+
+  // 로그인 페이지면 바로 렌더링
+  if (isLoginPage) return <div className="bg-slate-50">{children}</div>;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -78,7 +87,7 @@ export default function AdminLayout({
       )}>
         <div className="flex flex-col h-full">
           <div className="flex h-16 items-center px-6 border-b">
-            <span className="text-xl font-bold text-primary italic">정선닥트 Admin</span>
+            <span className="text-xl font-bold text-primary italic">Clean Air Duct Admin</span>
           </div>
 
           <nav className="flex-1 space-y-1 p-4">

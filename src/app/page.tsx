@@ -16,6 +16,7 @@ import {
   Loader2,
   Check
 } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import { supabase } from "@/lib/supabase";
 
@@ -28,6 +29,20 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const heroImages = [
+    "/images/hero_bg01.png",
+    "/images/hero_bg02.png",
+    "/images/hero_bg03.png",
+  ];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,8 +67,9 @@ export default function Home() {
       setFormData({ name: "", phone: "", region: "", content: "" });
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err: any) {
-      console.error("Error submitting inquiry:", err);
-      alert("문의 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      // 실운영이 아니므로 에러 오버레이 방지를 위해 warn으로 처리
+      console.warn("Error submitting inquiry (Supabase placeholder):", err);
+      alert("현재 미리보기 모드입니다. 정식 Supabase 설정 후 데이터 저장이 가능합니다.");
     } finally {
       setLoading(false);
     }
@@ -67,44 +83,134 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-primary py-20 text-center text-white md:py-32">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[#000] opacity-5"></div>
+      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-primary py-24 text-center text-white md:py-40">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 z-0 bg-primary">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 0.6, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 2, ease: "easeInOut" }}
+              className="absolute inset-0 z-0 h-full w-full"
+            >
+              <img 
+                src={heroImages[currentImageIndex]} 
+                alt="Background" 
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          
+          {/* Overlay Gradients */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-br from-primary/80 via-blue-900/40 to-primary/80" />
+          <div className="absolute inset-0 z-10 bg-slate-900/20 backdrop-blur-[2px]" />
+
+          {/* Floating Animated Orbs (Preserved for additional depth) */}
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.2, 0.4, 0.2],
+              x: [0, 50, 0],
+              y: [0, 30, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-20 -left-20 h-[400px] w-[400px] rounded-full bg-cyan-400 blur-[100px]"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.1, 0.3, 0.1],
+              x: [0, -40, 0],
+              y: [0, -30, 0]
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute -bottom-20 -right-20 h-[500px] w-[500px] rounded-full bg-white/20 blur-[120px]"
+          />
         </div>
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.3
+              }
+            }
+          }}
           className="container relative z-10 px-4"
         >
-          <span className="mb-4 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-semibold tracking-wider uppercase">
+          <motion.span 
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className="mb-6 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-bold tracking-wider uppercase border border-white/20 backdrop-blur-md"
+          >
             정선 전 지역 1시간 이내 출동
-          </span>
-          <h2 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-white">
+          </motion.span>
+          
+          <motion.h2 
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className="mb-8 text-4xl font-black tracking-tight sm:text-6xl md:text-7xl leading-[1.1]"
+          >
             "정선 사장님들의 주방,<br />
-            <span className="text-accent">1시간 안에</span> 달려가서 해결합니다."
-          </h2>
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-blue-100 md:text-xl">
+            <motion.span 
+              animate={{ 
+                textShadow: [
+                  "0 0 0px rgba(0, 0, 0, 0)",
+                  "0 4px 15px rgba(0, 0, 0, 0.3)",
+                  "0 0 0px rgba(0, 0, 0, 0)"
+                ]
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="text-accent underline decoration-accent/40 underline-offset-8 drop-shadow-lg"
+            >
+              1시간 안에
+            </motion.span> 달려가서 해결합니다."
+          </motion.h2>
+          
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className="mx-auto mb-12 max-w-2xl text-lg text-blue-100/90 md:text-2xl font-medium leading-relaxed"
+          >
             사북에서 고한까지, 정선 전 지역 식당 닥트 시공·수리·AS 전문업체.<br className="hidden md:block" />
             멀리서 찾지 마세요. 정선 원주민이 직접 해결해 드립니다.
-          </p>
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          </motion.p>
+          
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, scale: 0.9 },
+              visible: { opacity: 1, scale: 1 }
+            }}
+            className="flex flex-col items-center justify-center gap-5 sm:flex-row"
+          >
             <a 
               href="tel:010-0000-0000" 
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition-all hover:scale-105 active:scale-95 sm:w-auto"
+              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-accent px-10 py-5 text-xl font-black text-white shadow-[0_10px_30px_-10px_rgba(253,224,71,0.5)] transition-all hover:scale-105 hover:bg-yellow-400 active:scale-95 sm:w-auto"
             >
-              <PhoneCall className="h-5 w-5" />
+              <PhoneCall className="h-6 w-6" />
               지금 바로 전화하기
             </a>
             <a 
               href="#contact" 
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:w-auto"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl border-2 border-white/20 bg-white/5 px-10 py-5 text-xl font-bold text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/40 sm:w-auto"
             >
-              <Mail className="h-5 w-5" />
+              <Mail className="h-6 w-6" />
               무료 견적 문의
             </a>
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -112,7 +218,7 @@ export default function Home() {
       <section id="services" className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <h3 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl text-slate-900">무엇이 필요하신가요?</h3>
-          <p className="text-muted-foreground font-sans">정선 닥트가 제공하는 전문 서비스입니다.</p>
+          <p className="text-muted-foreground font-sans">Clean Air Duct가 제공하는 전문 서비스입니다.</p>
         </div>
         
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -309,7 +415,8 @@ function PortfolioList() {
                 if (error) throw error;
                 setPortfolio(data || []);
             } catch (err) {
-                console.error("Error fetching portfolio:", err);
+                // 에러 오버레이 방지를 위해 warn으로 처리
+                console.warn("Error fetching portfolio (Supabase placeholder):", err);
             } finally {
                 setLoading(false);
             }

@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-8 rounded-3xl border bg-white p-8 shadow-xl md:p-12">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold tracking-tight text-primary">관리자 로그인</h2>
-          <p className="mt-2 text-muted-foreground">정선닥트 관리자 전용 페이지입니다.</p>
+          <p className="mt-2 text-muted-foreground">Clean Air Duct 관리자 전용 페이지입니다.</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
