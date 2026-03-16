@@ -1,8 +1,6 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'export',
-  // GitHub Pages 서비스 경로에 맞게 설정 (https://hpeerage.github.io/duct/)
   basePath: '/duct',
   assetPrefix: '/duct',
   images: {
