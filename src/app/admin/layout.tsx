@@ -14,6 +14,7 @@ import {
   X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function AdminLayout({
   children,
@@ -95,17 +96,19 @@ export default function AdminLayout({
               href="/admin/dashboard" 
               icon={<LayoutDashboard className="h-5 w-5" />} 
               label="대시보드" 
-              active 
+              active={pathname === "/admin/dashboard"} 
             />
             <NavItem 
               href="/admin/inquiries" 
               icon={<MessageSquare className="h-5 w-5" />} 
               label="문의 관리" 
+              active={pathname === "/admin/inquiries"}
             />
             <NavItem 
               href="/admin/portfolio" 
               icon={<ImageIcon className="h-5 w-5" />} 
               label="시공 사례 관리" 
+              active={pathname === "/admin/portfolio"}
             />
           </nav>
 
@@ -146,7 +149,7 @@ function NavItem({ href, icon, label, active = false }: {
   active?: boolean; 
 }) {
   return (
-    <a 
+    <Link 
       href={href}
       className={cn(
         "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all",
@@ -158,6 +161,6 @@ function NavItem({ href, icon, label, active = false }: {
         {label}
       </div>
       <ChevronRight className={cn("h-4 w-4 opacity-50", active ? "opacity-100" : "")} />
-    </a>
+    </Link>
   );
 }
