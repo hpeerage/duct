@@ -197,7 +197,7 @@ export default function Home() {
             className="flex flex-col items-center justify-center gap-5 sm:flex-row"
           >
             <a 
-              href="tel:010-0000-0000" 
+              href="tel:010-7444-8039" 
               className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-accent px-10 py-5 text-xl font-black text-white shadow-[0_10px_30px_-10px_rgba(253,224,71,0.5)] transition-all hover:scale-105 hover:bg-yellow-400 active:scale-95 sm:w-auto"
             >
               <PhoneCall className="h-6 w-6" />
@@ -280,7 +280,7 @@ export default function Home() {
             </div>
             
             <div className="grid gap-6">
-              <ContactInfo icon={<Phone className="h-6 w-6" />} label="전화번호" value="010-0000-0000" isLink />
+              <ContactInfo icon={<Phone className="h-6 w-6" />} label="전화번호" value="010-7444-8039" isLink />
               <ContactInfo icon={<MapPin className="h-6 w-6" />} label="서비스 지역" value="정선군 전 지역 (사북, 고한, 남면, 화암 등)" />
             </div>
           </div>

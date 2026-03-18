@@ -33,7 +33,7 @@ export default function RootLayout({
               <a href="#contact" className="hover:text-primary transition-colors">견적문의</a>
             </nav>
             <a 
-              href="tel:010-0000-0000" 
+              href="tel:010-7444-8039" 
               className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               전화문의
@@ -47,7 +47,7 @@ export default function RootLayout({
 
         {/* Floating Call Button for Mobile */}
         <a 
-          href="tel:010-0000-0000"
+          href="tel:010-7444-8039"
           className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-lg animate-bounce active:scale-95 md:h-16 md:w-auto md:px-6 md:rounded-2xl"
           aria-label="전화 상담하기"
         >
