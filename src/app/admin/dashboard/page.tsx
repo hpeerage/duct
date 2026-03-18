@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquare, Users, CheckCircle2, Clock, Loader2, Database, Eraser, AlertCircle } from "lucide-react";
+import { MessageSquare, Users, CheckCircle2, Clock, Loader2, Database, Eraser, AlertCircle, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [resetting, setResetting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [resetType, setResetType] = useState<'inquiries' | 'portfolio' | 'all'>('inquiries');
 
   const fetchData = async () => {
     try {
@@ -50,16 +51,25 @@ export default function AdminDashboardPage() {
   const handleResetData = async () => {
     setResetting(true);
     try {
-      // inquiries 테이블의 모든 데이터 삭제
-      // Supabase에서 RLS가 설정되어 있으므로, 인증된 사용자로서 모든 ID를 대상으로 삭제 요청
-      const { error } = await supabase
-        .from("inquiries")
-        .delete()
-        .neq("id", "00000000-0000-0000-0000-000000000000"); // 모든 ID 삭제 트릭 (GUID 0이 아님)
-
-      if (error) throw error;
+      const uuidZero = "00000000-0000-0000-0000-000000000000";
       
-      alert("모든 견적 문의 데이터가 성공적으로 초기화되었습니다.");
+      if (resetType === 'inquiries' || resetType === 'all') {
+        const { error } = await supabase
+          .from("inquiries")
+          .delete()
+          .neq("id", uuidZero);
+        if (error) throw error;
+      }
+
+      if (resetType === 'portfolio' || resetType === 'all') {
+        const { error } = await supabase
+          .from("portfolio")
+          .delete()
+          .neq("id", uuidZero);
+        if (error) throw error;
+      }
+      
+      alert(`${resetType === 'all' ? '전체 데이터' : resetType === 'inquiries' ? '문의 데이터' : '시공 사례 데이터'}가 초기화되었습니다.`);
       await fetchData();
     } catch (err) {
       console.error("Reset failed:", err);
@@ -68,6 +78,11 @@ export default function AdminDashboardPage() {
       setResetting(false);
       setShowConfirm(false);
     }
+  };
+
+  const openResetConfirm = (type: 'inquiries' | 'portfolio' | 'all') => {
+    setResetType(type);
+    setShowConfirm(true);
   };
 
   if (loading) {
@@ -80,18 +95,34 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
         <div>
           <h1 className="text-2xl font-black">대시보드</h1>
           <p className="text-muted-foreground">실시간 관리 현황 및 데이터 통계</p>
         </div>
-        <button 
-          onClick={() => setShowConfirm(true)}
-          className="flex items-center justify-center gap-2 bg-red-50 text-red-600 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors border border-red-100 shadow-sm whitespace-nowrap"
-        >
-          <Database className="h-4 w-4" />
-          문의 데이터 전체 리셋
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={() => openResetConfirm('inquiries')}
+            className="flex items-center gap-2 bg-white text-slate-700 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-colors border shadow-sm"
+          >
+            <MessageSquare className="h-4 w-4 text-blue-500" />
+            문의 리셋
+          </button>
+          <button 
+            onClick={() => openResetConfirm('portfolio')}
+            className="flex items-center gap-2 bg-white text-slate-700 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-colors border shadow-sm"
+          >
+            <ImageIcon className="h-4 w-4 text-purple-500" />
+            사례 리셋
+          </button>
+          <button 
+            onClick={() => openResetConfirm('all')}
+            className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors border border-red-100 shadow-sm"
+          >
+            <Database className="h-4 w-4" />
+            전체 초기화
+          </button>
+        </div>
       </div>
 
       {/* Confirmation Modal Overlay */}
@@ -116,9 +147,13 @@ export default function AdminDashboardPage() {
                   <AlertCircle className="h-6 w-6 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900">정말 초기화하시겠습니까?</h3>
+                  <h3 className="text-xl font-bold text-slate-900">
+                    {resetType === 'all' ? '전체 데이터를 ' : 
+                     resetType === 'inquiries' ? '문의 내역을 ' : '시공 사례를 '}
+                    초기화할까요?
+                  </h3>
                   <p className="text-slate-500 mt-1 leading-relaxed">
-                    이 작업은 되돌릴 수 없으며, 모든 견적 문의 기록이 <strong>영구적으로 삭제</strong>됩니다. 테스트를 마치고 실제 업무를 시작할 때만 수행해 주세요.
+                    이 작업은 되돌릴 수 없으며, 선택한 테이블의 모든 기록이 <strong>영구적으로 삭제</strong>됩니다. 테스트 완료 후 실데이터 입력을 앞둔 상황에서만 수행해 주세요.
                   </p>
                 </div>
               </div>
