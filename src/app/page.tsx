@@ -272,10 +272,10 @@ export default function Home() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div className="space-y-8 text-slate-900 font-sans">
             <div>
-              <h3 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">무료 견적 문의</h3>
+              <h3 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl text-slate-900">무료 견적 문의</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 현장 사진을 첨부해 주시면 더욱 정확하고 빠른 견적이 가능합니다. 
-                접수 확인 후 즉시 연락드리겠습니다.
+                접수 확인 후 <b>010-7444-8039</b> 번호로 즉시 연락드리겠습니다.
               </p>
             </div>
             
@@ -331,7 +331,7 @@ export default function Home() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="010-1234-5678"
+                      placeholder="010-7444-8039"
                       className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans"
                     />
                   </div>
