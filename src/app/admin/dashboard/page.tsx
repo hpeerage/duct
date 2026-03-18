@@ -11,7 +11,7 @@ export default function AdminDashboardPage() {
     total: 0,
     pending: 0,
     completed: 0,
-    visitors: "1,240" // 외부 분석 도구 연동 전 임시값
+    visitors: "0" // 통계 수집 전 초기값
   });
   const [recentInquiries, setRecentInquiries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
           total: inquiries.length,
           pending: inquiries.filter(i => i.status === 'pending').length,
           completed: inquiries.filter(i => i.status === 'completed').length,
-          visitors: "1,240"
+          visitors: "0"
         });
       }
     } catch (err) {
@@ -209,7 +209,7 @@ export default function AdminDashboardPage() {
           icon={<Users className="h-6 w-6 text-purple-600" />} 
           label="월간 방문자" 
           value={stats.visitors} 
-          trend="+15% 달성" 
+          trend="수집 대기 중" 
         />
       </div>
 
