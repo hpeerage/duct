@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <head>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script
@@ -38,8 +38,6 @@ export default function RootLayout({
             </Script>
           </>
         )}
-      </head>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
         <header className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <a href="/duct/" className="flex items-center gap-2">
