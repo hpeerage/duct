@@ -27,7 +27,7 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  const isLoginPage = pathname === "/admin";
+  const isLoginPage = pathname === "/admin" || pathname === "/admin/";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -58,15 +58,35 @@ export default function AdminLayout({
     router.push("/admin");
   };
 
+  console.log("AdminLayout rendering: pathname =", pathname, "isLoginPage =", isLoginPage, "session =", !!session);
+
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      <div className="flex h-screen items-center justify-center bg-[#0f1115]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent shadow-lg shadow-primary/20"></div>
       </div>
     );
   }
 
-  if (!session && !isLoginPage) return null;
+  // 세션이 없고 로그인 페이지도 아닌 경우의 폴백 (빈 페이지 방지)
+  if (!session && !isLoginPage) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0f1115] text-slate-100 p-6 text-center font-sans">
+        <div className="mb-6 h-16 w-16 rounded-3xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
+          <Settings className="h-8 w-8 text-red-500" />
+        </div>
+        <h1 className="text-2xl font-black mb-2 italic">Unauthorized Access</h1>
+        <p className="text-slate-400 mb-8 max-w-sm leading-relaxed">준비된 세션이 없거나 로그인 세션이 만료되었습니다. 로그인 페이지로 이동이 필요합니다.</p>
+        <Link 
+          href="/admin/" 
+          className="rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all active:scale-95"
+        >
+          로그인 페이지로 이동
+        </Link>
+        <p className="mt-10 text-[10px] text-slate-700 font-mono">DEBUG: {pathname} | {String(isLoginPage)}</p>
+      </div>
+    );
+  }
 
   // 로그인 페이지면 바로 렌더링 (다크 테마 배경 적용)
   if (isLoginPage) return <div className="bg-[#0f1115] min-h-screen">{children}</div>;
@@ -134,15 +154,15 @@ export default function AdminLayout({
       <main className="md:pl-64">
         <header className="sticky top-0 z-30 h-16 bg-[#0f1115]/80 backdrop-blur-md border-b border-slate-800 px-6 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-slate-400">
-            <span>대시보드</span>
+            <span>{pathname?.includes('inquiries') ? '문의 관리' : pathname?.includes('portfolio') ? '시공 사례 관리' : '대시보드'}</span>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-end mr-2">
-              <span className="text-xs font-bold text-slate-200">{session.user.email}</span>
+              <span className="text-xs font-bold text-slate-200">{session?.user?.email}</span>
               <span className="text-[10px] text-slate-500">Administrator</span>
             </div>
             <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
-              <span className="text-xs font-bold">{session.user.email[0].toUpperCase()}</span>
+              <span className="text-xs font-bold">{session?.user?.email ? session.user.email[0].toUpperCase() : 'A'}</span>
             </div>
           </div>
         </header>
@@ -165,7 +185,7 @@ function NavItem({ href, icon, label, active = false }: {
       href={href}
       className={cn(
         "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all",
-        active ? "bg-primary text-white shadow-md shadow-primary/20" : "text-muted-foreground hover:bg-slate-100 hover:text-foreground"
+        active ? "bg-primary text-white shadow-md shadow-primary/20" : "text-slate-400 hover:bg-slate-800/50 hover:text-white"
       )}
     >
       <div className="flex items-center gap-3">
