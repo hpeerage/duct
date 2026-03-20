@@ -188,9 +188,9 @@ export default function AdminPortfolioPage() {
   };
 
   return (
-    <div className="space-y-6 text-slate-900 font-sans">
+    <div className="space-y-6 text-slate-100 font-sans">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">시공 사례 관리</h2>
+        <h2 className="text-2xl font-bold text-white">시공 사례 관리</h2>
         <button 
           onClick={() => {
             if (isAdding) {
@@ -200,7 +200,7 @@ export default function AdminPortfolioPage() {
               setIsAdding(true);
             }
           }}
-          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg hover:bg-blue-600 transition-all active:scale-95"
         >
           {isAdding ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
           {isAdding ? "취소하기" : "새 사례 등록"}
@@ -208,48 +208,48 @@ export default function AdminPortfolioPage() {
       </div>
 
       {isAdding && (
-        <div className="rounded-3xl border bg-white p-6 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
-          <form className="grid gap-8 md:grid-cols-2" onSubmit={handleSubmit}>
-            <div className="space-y-4">
+        <div className="rounded-3xl border border-slate-800 bg-[#16191e] p-8 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <form className="grid gap-10 md:grid-cols-2" onSubmit={handleSubmit}>
+            <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-bold">제목</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">제목</label>
                 <input 
                   type="text" 
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   placeholder="예: 사북읍 고깃집 주방 후드 교체"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-2 outline-none focus:border-primary"
+                  className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-white outline-none focus:border-primary transition-colors placeholder:text-slate-700"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold">지역 태그</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">지역 태그</label>
                 <input 
                   type="text" 
                   value={formData.region_tag}
                   onChange={(e) => setFormData({...formData, region_tag: e.target.value})}
                   placeholder="예: 사북읍, 고한읍"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-2 outline-none focus:border-primary"
+                  className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-white outline-none focus:border-primary transition-colors placeholder:text-slate-700"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold">상세 설명</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">상세 설명</label>
                 <textarea 
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full rounded-xl border border-gray-200 px-4 py-2 outline-none focus:border-primary resize-none"
+                  className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-white outline-none focus:border-primary transition-colors placeholder:text-slate-700 resize-none"
                 ></textarea>
               </div>
-              <div className="flex items-center gap-2 pt-2">
+              <div className="flex items-center gap-3 pt-2">
                 <input 
                   type="checkbox" 
                   id="is_featured"
-                  className="w-4 h-4 rounded text-primary"
+                  className="w-5 h-5 rounded border-slate-800 bg-slate-950 text-primary focus:ring-primary/20"
                   checked={formData.is_featured}
                   onChange={(e) => setFormData({...formData, is_featured: e.target.checked})}
                 />
-                <label htmlFor="is_featured" className="text-sm font-medium">메인 페이지 노출</label>
+                <label htmlFor="is_featured" className="text-sm font-bold text-slate-300">메인 페이지 노출</label>
               </div>
             </div>
 
@@ -257,17 +257,17 @@ export default function AdminPortfolioPage() {
               <div className="grid grid-cols-2 gap-4">
                 {/* Before Image Upload */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-amber-600">Before 사진</label>
+                  <label className="text-xs font-bold text-amber-500 uppercase tracking-wider">Before 사진</label>
                   <div 
-                    className="relative aspect-square rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-primary transition-colors cursor-pointer group"
+                    className="relative aspect-square rounded-2xl border-2 border-dashed border-slate-800 bg-slate-950/50 flex flex-col items-center justify-center overflow-hidden hover:border-amber-500/50 transition-colors cursor-pointer group"
                     onClick={() => document.getElementById('before-upload')?.click()}
                   >
                     {beforePreview ? (
                       <img src={beforePreview} alt="Before" className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary">
-                        <Plus className="h-6 w-6" />
-                        <span className="text-xs font-bold">이미지 선택</span>
+                      <div className="flex flex-col items-center gap-2 text-slate-600 group-hover:text-amber-500">
+                        <ImageIcon className="h-8 w-8" />
+                        <span className="text-[10px] font-black">이미지 선택</span>
                       </div>
                     )}
                     <input 
@@ -282,17 +282,17 @@ export default function AdminPortfolioPage() {
 
                 {/* After Image Upload */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-blue-600">After 사진</label>
+                  <label className="text-xs font-bold text-blue-500 uppercase tracking-wider">After 사진</label>
                   <div 
-                    className="relative aspect-square rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-primary transition-colors cursor-pointer group"
+                    className="relative aspect-square rounded-2xl border-2 border-dashed border-slate-800 bg-slate-950/50 flex flex-col items-center justify-center overflow-hidden hover:border-blue-500/50 transition-colors cursor-pointer group"
                     onClick={() => document.getElementById('after-upload')?.click()}
                   >
                     {afterPreview ? (
                       <img src={afterPreview} alt="After" className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary">
-                        <Plus className="h-6 w-6" />
-                        <span className="text-xs font-bold">이미지 선택</span>
+                      <div className="flex flex-col items-center gap-2 text-slate-600 group-hover:text-blue-500">
+                        <ImageIcon className="h-8 w-8" />
+                        <span className="text-[10px] font-black">이미지 선택</span>
                       </div>
                     )}
                     <input 
@@ -306,11 +306,11 @@ export default function AdminPortfolioPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-2">
+              <div className="flex gap-4 pt-4">
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-lg font-bold text-white shadow-lg hover:bg-blue-700 disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-lg font-bold text-white shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                   {loading && <Loader2 className="h-5 w-5 animate-spin" />}
                   {editingId ? "수정 완료" : "사례 등록하기"}
@@ -328,50 +328,52 @@ export default function AdminPortfolioPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
           {items.map((item) => (
-            <div key={item.id} className="group relative rounded-3xl border bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-               <div className="flex gap-4">
-                  <div className="relative h-24 w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
+            <div key={item.id} className="group relative rounded-3xl border border-slate-800 bg-[#16191e]/50 backdrop-blur-sm p-5 shadow-sm hover:shadow-xl hover:bg-slate-800/50 transition-all duration-300">
+               <div className="flex gap-5">
+                  <div className="relative h-28 w-36 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-950 border border-slate-800">
                     {item.after_image_url ? (
-                        <img src={item.after_image_url} alt={item.title} className="h-full w-full object-cover" />
+                        <img src={item.after_image_url} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     ) : (
-                        <ImageIcon className="h-full w-full p-6 text-slate-300" />
+                        <ImageIcon className="h-full w-full p-8 text-slate-800" />
                     )}
                   </div>
                   <div className="flex-1 space-y-2 min-w-0">
                     <div className="flex items-center justify-between">
-                        <h4 className="font-bold truncate pr-16">{item.title}</h4>
-                        <div className="absolute right-4 top-4 flex gap-2">
+                        <h4 className="font-bold text-lg text-slate-100 truncate pr-20">{item.title}</h4>
+                        <div className="absolute right-5 top-5 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button 
                                 onClick={() => handleEdit(item)}
-                                className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                                className="p-2 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-colors border border-blue-500/20"
                             >
                                 <Edit2 className="h-4 w-4" />
                             </button>
                             <button 
                                 onClick={() => handleDelete(item.id)}
-                                className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                                className="p-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors border border-red-500/20"
                             >
                                 <Trash2 className="h-4 w-4" />
                             </button>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider font-bold">
-                        <MapPin className="h-3 w-3" /> {item.region_tag || "지역 미지정"}
+                    <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        <MapPin className="h-3 w-3 text-primary" /> {item.region_tag || "지역 미지정"}
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
+                    <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">{item.description}</p>
                   </div>
                </div>
                {item.is_featured && (
-                    <div className="absolute left-6 top-6 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-black text-white backdrop-blur-sm">
-                        MAIN
+                    <div className="absolute left-7 top-7 rounded-full bg-primary px-3 py-1 text-[10px] font-black text-white shadow-lg shadow-primary/20">
+                        FEATURED
                     </div>
                )}
             </div>
           ))}
           {items.length === 0 && (
-            <div className="col-span-full rounded-3xl border border-dashed py-20 text-center text-muted-foreground">
-                <ImageIcon className="mx-auto h-12 w-12 mb-4 opacity-20" />
-                등록된 시공 사례가 없습니다.
+            <div className="col-span-full rounded-3xl border border-dashed border-slate-800 py-24 text-center">
+                <div className="mx-auto h-16 w-16 rounded-3xl bg-slate-900 flex items-center justify-center mb-6">
+                    <ImageIcon className="h-8 w-8 text-slate-700" />
+                </div>
+                <p className="text-slate-500 font-medium italic">등록된 시공 사례가 없습니다.</p>
             </div>
           )}
         </div>

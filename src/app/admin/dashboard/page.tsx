@@ -97,27 +97,27 @@ export default function AdminDashboardPage() {
     <div className="space-y-10">
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-black">대시보드</h1>
-          <p className="text-muted-foreground">실시간 관리 현황 및 데이터 통계</p>
+          <h1 className="text-2xl font-black text-white">대시보드</h1>
+          <p className="text-slate-500">실시간 관리 현황 및 데이터 통계</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button 
             onClick={() => openResetConfirm('inquiries')}
-            className="flex items-center gap-2 bg-white text-slate-700 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-colors border shadow-sm"
+            className="flex items-center gap-2 bg-slate-900 text-slate-300 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-800 transition-colors border border-slate-800 shadow-sm"
           >
             <MessageSquare className="h-4 w-4 text-blue-500" />
             문의 리셋
           </button>
           <button 
             onClick={() => openResetConfirm('portfolio')}
-            className="flex items-center gap-2 bg-white text-slate-700 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-colors border shadow-sm"
+            className="flex items-center gap-2 bg-slate-900 text-slate-300 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-slate-800 transition-colors border border-slate-800 shadow-sm"
           >
             <ImageIcon className="h-4 w-4 text-purple-500" />
             사례 리셋
           </button>
           <button 
             onClick={() => openResetConfirm('all')}
-            className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors border border-red-100 shadow-sm"
+            className="flex items-center gap-2 bg-red-950/30 text-red-500 px-4 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-950/50 transition-colors border border-red-900/30 shadow-sm"
           >
             <Database className="h-4 w-4" />
             전체 초기화
@@ -134,26 +134,26 @@ export default function AdminDashboardPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowConfirm(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl border overflow-hidden"
+              className="relative w-full max-w-md bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 overflow-hidden"
             >
               <div className="flex items-start gap-4 mb-6">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-100">
-                  <AlertCircle className="h-6 w-6 text-red-600" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-500/10">
+                  <AlertCircle className="h-6 w-6 text-red-500" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900">
+                  <h3 className="text-xl font-bold text-white">
                     {resetType === 'all' ? '전체 데이터를 ' : 
                      resetType === 'inquiries' ? '문의 내역을 ' : '시공 사례를 '}
                     초기화할까요?
                   </h3>
-                  <p className="text-slate-500 mt-1 leading-relaxed">
-                    이 작업은 되돌릴 수 없으며, 선택한 테이블의 모든 기록이 <strong>영구적으로 삭제</strong>됩니다. 테스트 완료 후 실데이터 입력을 앞둔 상황에서만 수행해 주세요.
+                  <p className="text-slate-400 mt-2 text-sm leading-relaxed">
+                    이 작업은 되돌릴 수 없으며, 선택한 테이블의 모든 기록이 <span className="text-red-400 font-bold">영구적으로 삭제</span>됩니다. 테스트 완료 후 실데이터 입력을 앞둔 상황에서만 수행해 주세요.
                   </p>
                 </div>
               </div>
@@ -161,14 +161,14 @@ export default function AdminDashboardPage() {
                 <button 
                   onClick={() => setShowConfirm(false)}
                   disabled={resetting}
-                  className="flex-1 px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-3 rounded-2xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition-colors disabled:opacity-50"
                 >
                   취소
                 </button>
                 <button 
                   onClick={handleResetData}
                   disabled={resetting}
-                  className="flex-1 px-4 py-3 rounded-2xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 px-4 py-3 rounded-2xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {resetting ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -188,25 +188,25 @@ export default function AdminDashboardPage() {
       {/* Stats Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard 
-          icon={<MessageSquare className="h-6 w-6 text-blue-600" />} 
+          icon={<MessageSquare className="h-6 w-6 text-blue-500" />} 
           label="전체 문의" 
           value={stats.total.toString()} 
           trend="누적 데이터" 
         />
         <StatCard 
-          icon={<Clock className="h-6 w-6 text-amber-600" />} 
+          icon={<Clock className="h-6 w-6 text-amber-500" />} 
           label="대기 중" 
           value={stats.pending.toString()} 
           trend={stats.pending > 0 ? "신속 확인 필요" : "모두 확인됨"} 
         />
         <StatCard 
-          icon={<CheckCircle2 className="h-6 w-6 text-green-600" />} 
+          icon={<CheckCircle2 className="h-6 w-6 text-green-500" />} 
           label="처리 완료" 
           value={stats.completed.toString()} 
           trend="성공적인 서비스" 
         />
         <StatCard 
-          icon={<Users className="h-6 w-6 text-purple-600" />} 
+          icon={<Users className="h-6 w-6 text-purple-500" />} 
           label="월간 방문자" 
           value={stats.visitors} 
           trend="수집 대기 중" 
@@ -214,12 +214,12 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Recent Inquiries List */}
-      <div className="rounded-3xl border bg-white shadow-sm overflow-hidden">
-        <div className="p-6 border-b flex items-center justify-between">
-          <h2 className="text-xl font-bold">최근 문의 내역</h2>
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/30 backdrop-blur-sm shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+          <h2 className="text-xl font-bold text-white">최근 문의 내역</h2>
           <button className="text-sm font-bold text-primary hover:underline">전체 보기</button>
         </div>
-        <div className="divide-y text-slate-900 font-sans">
+        <div className="divide-y divide-slate-800">
           {recentInquiries.length > 0 ? (
             recentInquiries.map((inquiry) => (
               <InquiryRow 
@@ -232,7 +232,7 @@ export default function AdminDashboardPage() {
               />
             ))
           ) : (
-            <div className="p-10 text-center text-muted-foreground font-sans">
+            <div className="p-16 text-center text-slate-500 font-sans italic">
               최근 문의 내역이 없습니다.
             </div>
           )}
@@ -251,15 +251,18 @@ function StatCard({ icon, label, value, trend }: {
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className="rounded-3xl border bg-white p-6 shadow-sm flex flex-col gap-4"
+      className="rounded-3xl border border-slate-800 bg-[#16191e] p-6 shadow-sm flex flex-col gap-4"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900/80 border border-slate-800">
         {icon}
       </div>
       <div>
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        <h3 className="text-2xl font-black mt-1">{value}</h3>
-        <p className="text-xs font-bold text-primary mt-2">{trend}</p>
+        <p className="text-sm font-medium text-slate-500">{label}</p>
+        <h3 className="text-3xl font-black mt-1 text-white">{value}</h3>
+        <p className="text-xs font-bold text-primary mt-2 flex items-center gap-1">
+          <span className="h-1 w-1 rounded-full bg-primary" />
+          {trend}
+        </p>
       </div>
     </motion.div>
   );
@@ -273,19 +276,19 @@ function InquiryRow({ name, region, content, date, status }: {
   status: 'pending' | 'completed';
 }) {
   return (
-    <div className="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between hover:bg-slate-50 transition-colors">
+    <div className="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between hover:bg-slate-800/30 transition-colors">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-lg">{name}</span>
-          <span className="px-2 py-0.5 rounded-full bg-slate-100 text-xs font-semibold text-muted-foreground">{region}</span>
+          <span className="font-bold text-lg text-slate-200">{name}</span>
+          <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] font-bold text-slate-400 border border-slate-700 uppercase tracking-tight">{region}</span>
         </div>
-        <p className="text-muted-foreground text-sm line-clamp-1">{content}</p>
+        <p className="text-slate-500 text-sm line-clamp-1">{content}</p>
       </div>
       <div className="flex items-center justify-between sm:gap-6">
-        <span className="text-sm text-muted-foreground">{date}</span>
+        <span className="text-sm text-slate-500">{date}</span>
         <span className={cn(
-          "px-3 py-1 rounded-full text-xs font-bold",
-          status === 'pending' ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
+          "px-3 py-1 rounded-full text-xs font-bold border",
+          status === 'pending' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-green-500/10 text-green-500 border-green-500/20"
         )}>
           {status === 'pending' ? '대기' : '완료'}
         </span>
