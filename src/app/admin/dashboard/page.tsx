@@ -5,6 +5,7 @@ import { MessageSquare, Users, CheckCircle2, Clock, Loader2, Database, Eraser, A
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -192,18 +193,21 @@ export default function AdminDashboardPage() {
           label="전체 문의" 
           value={stats.total.toString()} 
           trend="누적 데이터" 
+          href="/admin/inquiries"
         />
         <StatCard 
           icon={<Clock className="h-6 w-6 text-amber-500" />} 
           label="대기 중" 
           value={stats.pending.toString()} 
           trend={stats.pending > 0 ? "신속 확인 필요" : "모두 확인됨"} 
+          href="/admin/inquiries"
         />
         <StatCard 
           icon={<CheckCircle2 className="h-6 w-6 text-green-500" />} 
           label="처리 완료" 
           value={stats.completed.toString()} 
           trend="성공적인 서비스" 
+          href="/admin/inquiries"
         />
         <StatCard 
           icon={<Users className="h-6 w-6 text-purple-500" />} 
@@ -217,7 +221,7 @@ export default function AdminDashboardPage() {
       <div className="rounded-3xl border border-slate-800 bg-slate-900/30 backdrop-blur-sm shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
           <h2 className="text-xl font-bold text-white">최근 문의 내역</h2>
-          <button className="text-sm font-bold text-primary hover:underline">전체 보기</button>
+          <Link href="/admin/inquiries" className="text-sm font-bold text-primary hover:underline">전체 보기</Link>
         </div>
         <div className="divide-y divide-slate-800">
           {recentInquiries.length > 0 ? (
@@ -229,6 +233,7 @@ export default function AdminDashboardPage() {
                 content={inquiry.content} 
                 date={new Date(inquiry.created_at).toLocaleDateString()} 
                 status={inquiry.status} 
+                href="/admin/inquiries"
               />
             ))
           ) : (
@@ -242,17 +247,15 @@ export default function AdminDashboardPage() {
   );
 }
 
-function StatCard({ icon, label, value, trend }: { 
+function StatCard({ icon, label, value, trend, href }: { 
   icon: React.ReactNode; 
   label: string; 
   value: string; 
   trend: string;
+  href?: string;
 }) {
-  return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      className="rounded-3xl border border-slate-800 bg-[#16191e] p-6 shadow-sm flex flex-col gap-4"
-    >
+  const CardContent = (
+    <div className="rounded-3xl border border-slate-800 bg-[#16191e] p-6 shadow-sm flex flex-col gap-4 h-full">
       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900/80 border border-slate-800">
         {icon}
       </div>
@@ -264,35 +267,60 @@ function StatCard({ icon, label, value, trend }: {
           {trend}
         </p>
       </div>
+    </div>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className="block group">
+        <motion.div 
+          whileHover={{ y: -5, borderColor: 'var(--color-primary)' }}
+          className="h-full transition-colors"
+        >
+          {CardContent}
+        </motion.div>
+      </Link>
+    );
+  }
+
+  return (
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="h-full"
+    >
+      {CardContent}
     </motion.div>
   );
 }
 
-function InquiryRow({ name, region, content, date, status }: {
+function InquiryRow({ name, region, content, date, status, href }: {
   name: string;
   region: string;
   content: string;
   date: string;
   status: 'pending' | 'completed';
+  href: string;
 }) {
   return (
-    <div className="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between hover:bg-slate-800/30 transition-colors">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-lg text-slate-200">{name}</span>
-          <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] font-bold text-slate-400 border border-slate-700 uppercase tracking-tight">{region}</span>
+    <Link href={href} className="block group">
+      <div className="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between hover:bg-slate-800/30 transition-all border-l-2 border-transparent hover:border-primary">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-lg text-slate-200 group-hover:text-primary transition-colors">{name}</span>
+            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] font-bold text-slate-400 border border-slate-700 uppercase tracking-tight">{region}</span>
+          </div>
+          <p className="text-slate-500 text-sm line-clamp-1 group-hover:text-slate-300 transition-colors">{content}</p>
         </div>
-        <p className="text-slate-500 text-sm line-clamp-1">{content}</p>
+        <div className="flex items-center justify-between sm:gap-6">
+          <span className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{date}</span>
+          <span className={cn(
+            "px-3 py-1 rounded-full text-xs font-bold border transition-all shadow-sm",
+            status === 'pending' ? "bg-amber-500/10 text-amber-500 border-amber-500/20 group-hover:bg-amber-500/20" : "bg-green-500/10 text-green-500 border-green-500/20 group-hover:bg-green-500/20"
+          )}>
+            {status === 'pending' ? '대기' : '완료'}
+          </span>
+        </div>
       </div>
-      <div className="flex items-center justify-between sm:gap-6">
-        <span className="text-sm text-slate-500">{date}</span>
-        <span className={cn(
-          "px-3 py-1 rounded-full text-xs font-bold border",
-          status === 'pending' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-green-500/10 text-green-500 border-green-500/20"
-        )}>
-          {status === 'pending' ? '대기' : '완료'}
-        </span>
-      </div>
-    </div>
+    </Link>
   );
 }
