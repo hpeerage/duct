@@ -78,7 +78,7 @@ export default function AdminLayout({
         <h1 className="text-2xl font-black mb-2 italic">Unauthorized Access</h1>
         <p className="text-slate-400 mb-8 max-w-sm leading-relaxed">준비된 세션이 없거나 로그인 세션이 만료되었습니다. 로그인 페이지로 이동이 필요합니다.</p>
         <Link 
-          href="/admin/" 
+          href="/admin" 
           className="rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all active:scale-95"
         >
           로그인 페이지로 이동
@@ -108,7 +108,7 @@ export default function AdminLayout({
       )}>
         <div className="flex flex-col h-full">
           <div className="flex h-16 items-center px-6 border-b border-slate-800 bg-[#1a1d23]">
-            <Link href="/duct/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
                 <LayoutDashboard className="h-4 w-4 text-white" />
               </div>

@@ -49,9 +49,9 @@ CREATE POLICY "Enable all for authenticated admins on portfolio" ON public.portf
 CREATE POLICY "Allow public read access for portfolio images" 
 ON storage.objects FOR SELECT USING (bucket_id = 'portfolio');
 
--- 2. 인증된 사용자만 업로드 가능
-CREATE POLICY "Allow authenticated users to upload portfolio images" 
-ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'portfolio');
+-- 2. 누구나 업로드 가능 (문의 시 사진 첨부용)
+CREATE POLICY "Allow public to upload portfolio images" 
+ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'portfolio');
 
 -- 3. 인증된 사용자만 자기 파일 또는 버킷 내 파일 삭제 가능
 CREATE POLICY "Allow authenticated users to delete portfolio images" 

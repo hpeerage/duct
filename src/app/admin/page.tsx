@@ -95,7 +95,7 @@ export default function AdminLoginPage() {
         </form>
         
         <div className="pt-4 text-center">
-            <a href="/duct/" className="text-xs font-medium text-slate-600 hover:text-slate-400 transition-colors">홈페이지로 돌아가기</a>
+            <a href="/" className="text-xs font-medium text-slate-600 hover:text-slate-400 transition-colors">홈페이지로 돌아가기</a>
         </div>
       </div>
     </div>

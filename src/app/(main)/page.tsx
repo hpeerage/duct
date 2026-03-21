@@ -29,6 +29,8 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const heroImages = [
     "/duct/images/hero_bg01.png",
@@ -49,6 +51,29 @@ export default function Home() {
     setLoading(true);
 
     try {
+      let photo_url = null;
+
+      if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+        const filePath = `inquiries/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('portfolio')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error("Upload error detail:", uploadError);
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('portfolio')
+          .getPublicUrl(filePath);
+
+        photo_url = publicUrl;
+      }
+
       const { error } = await supabase
         .from("inquiries")
         .insert([
@@ -57,6 +82,7 @@ export default function Home() {
             phone: formData.phone,
             region: formData.region,
             content: formData.content,
+            photo_url: photo_url,
             status: "pending",
           },
         ]);
@@ -65,11 +91,18 @@ export default function Home() {
 
       setSubmitted(true);
       setFormData({ name: "", phone: "", region: "", content: "" });
+      setFile(null);
+      setPreviewUrl(null);
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err: any) {
-      // 실운영이 아니므로 에러 오버레이 방지를 위해 warn으로 처리
-      console.warn("Error submitting inquiry (Supabase placeholder):", err);
-      alert("현재 미리보기 모드입니다. 정식 Supabase 설정 후 데이터 저장이 가능합니다.");
+      console.warn("Error submitting inquiry:", err);
+      if (err.message === 'STORAGE_PERMISSION_DENIED' || err.message?.includes('row-level security')) {
+        alert("사진 업로드 권한이 없습니다. 관리자에게 문의하거나 잠시 후 다시 시도해 주세요. (스토리지 설정 확인 필요)");
+      } else if (err.status === 413 || err.message?.includes('too large')) {
+        alert("사진 용량이 너무 커서 서버에서 거부되었습니다. 더 작은 사진을 선택해 주세요.");
+      } else {
+        alert("문의 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      }
     } finally {
       setLoading(false);
     }
@@ -78,6 +111,75 @@ export default function Home() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            } else {
+              reject(new Error('Canvas to Blob failed'));
+            }
+          }, 'image/jpeg', 0.8);
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      
+      try {
+        setLoading(true);
+        // 고해상도 모바일 사진의 경우 압축 진행
+        const compressedFile = await compressImage(selectedFile);
+        setFile(compressedFile);
+        setPreviewUrl(URL.createObjectURL(compressedFile));
+      } catch (err) {
+        console.error("Image compression failed:", err);
+        // 압축 실패 시 원본 사용 (또는 에러 표시)
+        setFile(selectedFile);
+        setPreviewUrl(URL.createObjectURL(selectedFile));
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -373,10 +475,23 @@ export default function Home() {
 
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold cursor-pointer" htmlFor="photo">
-                     <div className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
-                      <Camera className="h-8 w-8 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground font-sans">현장 사진 첨부 (선택)</span>
-                      <input id="photo" type="file" className="hidden" accept="image/*" />
+                     <div className="relative flex h-32 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors overflow-hidden">
+                      {previewUrl ? (
+                        <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                      ) : (
+                        <>
+                          <Camera className="h-8 w-8 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground font-sans">현장 사진 첨부 (선택)</span>
+                        </>
+                      )}
+                      <input 
+                        id="photo" 
+                        type="file" 
+                        className="hidden" 
+                        accept="image/*" 
+                        capture="environment"
+                        onChange={handleFileChange}
+                      />
                      </div>
                   </label>
                 </div>
