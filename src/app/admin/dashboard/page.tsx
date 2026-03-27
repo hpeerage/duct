@@ -22,12 +22,26 @@ export default function AdminDashboardPage() {
 
   const fetchData = async () => {
     try {
-      const { data: inquiries, error } = await supabase
+      // 문의 통계
+      const { data: inquiries, error: inquiryError } = await supabase
         .from("inquiries")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (inquiryError) throw inquiryError;
+
+      // 월간 방문자 통계 (최근 30일)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const { count: visitorCount, error: visitorError } = await supabase
+        .from("visitor_logs")
+        .select("*", { count: 'exact', head: true })
+        .gte("created_at", thirtyDaysAgo.toISOString());
+
+      if (visitorError) {
+        console.warn("Visitor log fetch error:", visitorError);
+      }
 
       if (inquiries) {
         setRecentInquiries(inquiries.slice(0, 5));
@@ -35,7 +49,7 @@ export default function AdminDashboardPage() {
           total: inquiries.length,
           pending: inquiries.filter(i => i.status === 'pending').length,
           completed: inquiries.filter(i => i.status === 'completed').length,
-          visitors: "0"
+          visitors: visitorCount ? visitorCount.toLocaleString() : "0"
         });
       }
     } catch (err) {

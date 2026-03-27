@@ -1,0 +1,23 @@
+{
+  "name": "클린에어닥트",
+  "short_name": "클린에어닥트",
+  "description": "전문가용 닥트 시공 및 A/S - 클린에어닥트",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#002b5c",
+  "icons": [
+    {
+      "src": "/image_0.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/image_0.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
